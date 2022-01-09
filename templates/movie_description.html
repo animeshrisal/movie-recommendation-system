@@ -1,0 +1,28 @@
+
+    {% extends 'base.html' %}
+    {% block content %}
+    <ul>
+        <li>Name: {{movie.title}}</li>
+        <li>Description: {{movie.description}}</li>
+        <li>Runtime: {{movie.runtime}}</li>
+        <li>Release Date: {{movie.release_date}}</li>
+    </ul>
+
+    {% if request.user.is_authenticated %}
+        {% if not context.is_favorite %}
+            <div>
+                <a href="/add_to_favorite/{{movie.id}}">Add to favorite</a>
+            </div>
+        {% else %}
+            <div>
+                <a href="/remove_from_favorites/{{movie.id}}">Remove from favorites</a>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div>
+        <h6>Comments</h6>
+        <div class="container">
+
+        </div>
+    </div>
+    {% endblock %}
