@@ -1,13 +1,28 @@
 
 {% extends 'base.html' %}
 {% block content %} 
-<div class="container">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Movie Title</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
     {% for movie in movies %}
-        <div class="row">
-            <div class="col-2">{{movie.id}}</div>
-            <div class="col-8">{{movie.title}}</div>
-            <div class="col-2"><a href="/movie/{{movie.id}}">Go to details</a></div>
-        </div>
+        <tr>
+            <td>{{movie.id}}</td>
+            <td class="col-6">{{movie.title}}</td>
+            <td class="col-4">
+                <a href="/movie/{{movie.id}}">Go to details</a>
+                {% if request.user.is_superuser %}
+                <a href="/movie/{{movie.id}}/update">Update</a>
+                <a href="/movie/{{movie.id}}/delete">Delete</a>
+                {% endif %}
+            </td>
+        </tr>
     {% endfor %}
+    </tbody>
 </div>
 {% endblock %}
