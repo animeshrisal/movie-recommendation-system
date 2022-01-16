@@ -126,22 +126,24 @@ def upload_dataset(request):
         file_form = UploadForm(request.POST, request.FILES)
         if file_form.is_valid():
             dataset = pd.read_csv(request.FILES['file'])
-            spliced_dataset = dataset[['genres', ]]
-            spliced_dataset.homepage = spliced_dataset.homepage.fillna('')
-            spliced_dataset.runtime = spliced_dataset.runtime.fillna(0)
+            new_movies_list = []
+            dataset.release_date = dataset.release_date.fillna('')
             with transaction.atomic():
-                for index, row in spliced_dataset.iterrows():
-                    movie = Movie.objects.create(
-                        title = row['original_title'],
-                        homepage = row['homepage'],
-                        description = row['overview'],
-                        runtime = row['runtime'],
+                for index, row in dataset.iterrows():
+                    movie = Movie(
+                        title = row['title'],
+                        budget = row['budget'],
+                        genres = row['genres'],
+                        keywords = row['keywords'],
+                        overview = row['overview'],
+                        tagline = row['tagline'],
+                        cast = row['cast'],
                         release_date = datetime.strptime(row['release_date'], '%m/%d/%Y').strftime('%Y-%m-%d')
                     )
 
-            #     new_movies_list.append(movie)
+                new_movies_list.append(movie)
 
-            # Movie.objects.bulk_create(new_movies_list)
+            Movie.objects.bulk_create(new_movies_list)
 
 
     return render(request, 'upload_dataset.html', {'form': file_form})

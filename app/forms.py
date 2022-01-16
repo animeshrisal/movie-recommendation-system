@@ -4,7 +4,10 @@ from .models import Movie, Review
 class MovieForm(forms.ModelForm):
     class Meta:
         model = Movie
-        fields = ['title', 'homepage', 'description', 'release_date', 'runtime']
+        fields = ['title', 'budget', 'genres',
+            'keywords', 'overview', 'release_date',
+            'tagline', 'cast', 'director'
+        ]
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -13,4 +16,3 @@ class ReviewForm(forms.ModelForm):
 
 class UploadForm(forms.Form):
     file = forms.FileField()
-    
