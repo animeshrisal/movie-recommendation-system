@@ -6,7 +6,6 @@
         <li>Description: {{movie.description}}</li>
         <li>Runtime: {{movie.runtime}}</li>
     </ul>
-
     {% if request.user.is_authenticated %}
         {% if not context.is_favorite %}
             <div>
@@ -17,7 +16,13 @@
                 <a href="/remove_from_favorites/{{movie.id}}">Remove from favorites</a>
             </div>
         {% endif %}
-
+        <div>
+            You might also like:
+            {% for movie in recommended_movies %}
+                <a href = "/movie/{{movie.id}}">{{ movie.title }}</a>
+            {% endfor %}
+            
+        </div>
         <div class="container">
             <form action="/movie/{{movie.id}}" method="POST">
                 {% csrf_token %}

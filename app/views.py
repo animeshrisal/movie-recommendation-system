@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from app.forms import MovieForm, ReviewForm, UploadForm
+from app.ml import get_recommendation_for_movie
 from .models import Movie, Review
 import pandas as pd
 from django.db import transaction
@@ -26,7 +27,7 @@ def get_movies(request, page_number):
         'current_page': page_number,
         'next_page': page_number + 1
     }
-    
+
     page_size = 10
     movies = Movie.objects.all()[(page_number-1)*page_size:page_number*page_size]
     return render(request, 'movies.html', {'movies': movies, 'pagination': pagination})
@@ -62,8 +63,19 @@ def get_movie_details(request, id):
 
     if movie.favorite.filter(pk=request.user.pk).exists():
         context['is_favorite'] = True
+
+
+    movie_ids = get_recommendation_for_movie(id)
+
+    recommended_movies = Movie.objects.filter(id__in=movie_ids)
     
-    return render(request, 'movie_description.html', {'movie': movie, 'context': context, 'reviews': reviews, 'review_form': review_form})
+    return render(request, 'movie_description.html', 
+    {'movie': movie, 
+    'context': context, 
+    'reviews': reviews, 
+    'review_form': review_form,
+    'recommended_movies': recommended_movies
+    })
 
 def post_movie(request):
     form = MovieForm()
@@ -149,6 +161,7 @@ def upload_dataset(request):
                             overview = row['overview'],
                             tagline = row['tagline'],
                             cast = row['cast'],
+                            director = row['director']
                        )
 
                         new_movies_list.append(movie)
