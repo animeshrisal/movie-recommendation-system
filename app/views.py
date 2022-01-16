@@ -17,10 +17,19 @@ def home_page(request):
 def about_page(request):
     return render(request, 'about.html')
 
-def get_movies(request, page=3):
+def get_movies(request, page_number):
+    if page_number < 1:
+        page_number = 1
+
+    pagination = {
+        'previous_page': page_number - 1,
+        'current_page': page_number,
+        'next_page': page_number + 1
+    }
+    
     page_size = 10
-    movies = Movie.objects.all()[(page-1)*page_size:page*page_size]
-    return render(request, 'movies.html', {'movies': movies})
+    movies = Movie.objects.all()[(page_number-1)*page_size:page_number*page_size]
+    return render(request, 'movies.html', {'movies': movies, 'pagination': pagination})
 
 def update_movie(request, id):
     movie = Movie.objects.get(pk=id)
@@ -121,29 +130,32 @@ def get_user_favorites(request):
 
 def upload_dataset(request):
     file_form = UploadForm()
+    error_messages = {}
 
     if request.method == "POST":
         file_form = UploadForm(request.POST, request.FILES)
-        if file_form.is_valid():
-            dataset = pd.read_csv(request.FILES['file'])
-            new_movies_list = []
-            dataset.release_date = dataset.release_date.fillna('')
-            with transaction.atomic():
-                for index, row in dataset.iterrows():
-                    movie = Movie(
-                        title = row['title'],
-                        budget = row['budget'],
-                        genres = row['genres'],
-                        keywords = row['keywords'],
-                        overview = row['overview'],
-                        tagline = row['tagline'],
-                        cast = row['cast'],
-                        release_date = datetime.strptime(row['release_date'], '%m/%d/%Y').strftime('%Y-%m-%d')
-                    )
+        try:
+            if file_form.is_valid():
+                dataset = pd.read_csv(request.FILES['file'])
+                new_movies_list = []
+                dataset['budget'] = dataset['budget'].fillna(0)
+                with transaction.atomic():
+                    for index, row in dataset.iterrows():
+                        movie = Movie(
+                            title = row['title'],
+                            budget = row['budget'],
+                            genres = row['genres'],
+                            keywords = row['keywords'],
+                            overview = row['overview'],
+                            tagline = row['tagline'],
+                            cast = row['cast'],
+                       )
 
-                new_movies_list.append(movie)
+                        new_movies_list.append(movie)
 
-            Movie.objects.bulk_create(new_movies_list)
+                Movie.objects.bulk_create(new_movies_list)
+        except Exception as e:
+            error_messages['error'] = e
 
 
-    return render(request, 'upload_dataset.html', {'form': file_form})
+    return render(request, 'upload_dataset.html', {'form': file_form, 'error_messages': error_messages})

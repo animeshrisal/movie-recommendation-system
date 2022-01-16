@@ -12,15 +12,20 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <ul class = "navbar-nav mr-auto">
             <li class = "nav-item"><a class="nav-link" href="/">Home</a></li>
-            <li class = "nav-item"><a class="nav-link" href="/movie">Movies</a></li>
+            <li class = "nav-item"><a class="nav-link" href="/movie/page/1">Movies</a></li>
             <li class = "nav-item"><a class="nav-link" href="/about">About</a></li>
+        </ul>
+        <ul class = "navbar-nav">
             <!-- <a href="/post_movie">Add Movie</a> -->
             {% if request.user.is_authenticated %}
-            <li class = "nav-item m-auto"><a class="nav-link" href="/user_favorites">Favorites</a></li>
-            <li class = "nav-item m-auto"><a class="nav-link" href="/signout">Sign Out</a></li>
+                {% if request.user.is_staff %}
+                    <li class = "nav-item"><a class="nav-link" href="/upload_dataset">Upload Dataset</a></li>
+                {% endif %}
+            <li class = "nav-item"><a class="nav-link" href="/user_favorites">Favorites</a></li>
+            <li class = "nav-item"><a class="nav-link" href="/signout">Sign Out</a></li>
             {% else %}
-            <li class = "nav-item m-auto"><a class="nav-link" href="/signin">Login</a></li>
-            <li class = "nav-item m-auto"><a class="nav-link" href="/signup">Register</a></li>
+            <li class = "nav-item"><a class="nav-link" href="/signin">Login</a></li>
+            <li class = "nav-item"><a class="nav-link" href="/signup">Register</a></li>
             {% endif %}
         </ul>
     </nav>

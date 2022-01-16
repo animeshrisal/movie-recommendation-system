@@ -5,7 +5,7 @@ class MovieForm(forms.ModelForm):
     class Meta:
         model = Movie
         fields = ['title', 'budget', 'genres',
-            'keywords', 'overview', 'release_date',
+            'keywords', 'overview',
             'tagline', 'cast', 'director'
         ]
 

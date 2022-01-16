@@ -24,5 +24,12 @@
         </tr>
     {% endfor %}
     </tbody>
+    <div>
+        {% if pagination.current_page > 1 %}
+            <a href = "/movie/page/{{pagination.previous_page}}">Previous Page</a>
+        {% endif %}
+        
+        <a href = "/movie/page/{{pagination.next_page}}">Next Page</a>
+    </div>
 </div>
 {% endblock %}
