@@ -1,4 +1,5 @@
 from datetime import datetime
+from operator import ge
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
@@ -6,9 +7,14 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from app.forms import MovieForm, ReviewForm, UploadForm
 from app.ml import get_recommendation_for_movie
+from rest_framework import viewsets
+
+from app.serializers import MovieSerializer
 from .models import Movie, Review
 import pandas as pd
 from django.db import transaction
+
+from rest_framework import generics
 
 # Create your views here.
 def home_page(request):
@@ -172,3 +178,9 @@ def upload_dataset(request):
 
 
     return render(request, 'upload_dataset.html', {'form': file_form, 'error_messages': error_messages})
+
+class RetrieveMovieList(generics.ListAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
+
+
