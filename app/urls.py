@@ -13,7 +13,8 @@ urlpatterns = [
     path('signin/', views.signin, name="User Sign In"),
     path('signout/', views.signout, name="User Sign Out"),
     path('add_to_favorite/<int:id>', views.add_to_favorite, name="Add to favorite"),
-    path('remove_from_favorites/<int:id>', views.remove_from_favorites, name="Remove from favorite"),
+    path('remove_from_favorites/<int:id>',
+         views.remove_from_favorites, name="Remove from favorite"),
     path('user_favorites', views.get_user_favorites, name="Get User Favorites"),
     path('upload_dataset/', views.upload_dataset, name="Upload dataset"),
     path('get_movie_list', views.RetrieveMovieList.as_view(), name="get_movie_json")

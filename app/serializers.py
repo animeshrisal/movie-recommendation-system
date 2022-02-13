@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from app.models import Movie
 
+
 class MovieSerializer(serializers.ModelSerializer):
     title = serializers.CharField()
     budget = serializers.IntegerField()
@@ -15,5 +16,5 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ('title', 'budget', 'genres', 'keywords', 'overview', 'tagline', 'cast', 'director')
-
+        fields = ('title', 'budget', 'genres', 'keywords',
+                  'overview', 'tagline', 'cast', 'director')
